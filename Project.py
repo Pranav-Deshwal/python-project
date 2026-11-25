@@ -1,8 +1,4 @@
-# ==========================================
-# 1. FROM manage.py
-# ==========================================
-# Dictionary to store user details in memory
-# Format: { "username": {"password": "pwd", "role": "student/staff/administrator", "name": "Full Name"} }
+
 users_db = {}
 
 def register_user():
@@ -17,7 +13,7 @@ def register_user():
     print("Roles: 1. Student | 2. Staff | 3. Administrator")
     role_choice = input("Select your role (1/2/3): ")
 
-    # Conditional statements for role assignment
+    
     if role_choice == '1':
         role = "student"
     elif role_choice == '2':
@@ -30,7 +26,7 @@ def register_user():
 
     name = input("Enter your full name: ")
 
-    # Storing user details in a dictionary
+    # Storing
     users_db[username] = {
         "password": password,
         "role": role,
@@ -43,7 +39,7 @@ def login_user():
     username = input("Enter username: ")
     password = input("Enter password: ")
 
-    # Conditional statements to handle login validation
+    # login validation
     if username in users_db and users_db[username]["password"] == password:
         role = users_db[username]["role"]
         print(f"\nLogin successful! Logged in as {role}.")
@@ -77,17 +73,13 @@ def user_management_menu():
         elif choice == '2':
             logged_in_user, role = login_user()
             if logged_in_user:
-                # Optionally let them manage their profile right after logging in
+               manage their profile right after logging in
                 manage_profile(logged_in_user)
         elif choice == '3':
             break
         else:
             print("Invalid choice. Please enter 1, 2, or 3.")
 
-
-# ==========================================
-# 2. FROM Management.py (In-Memory, No CSV)
-# ==========================================
 records = [[
     "Item_ID", "Item_Name", "Category",
     "Description", "Status", "Location",
@@ -173,10 +165,6 @@ def management_module():
         else:
             print("Invalid choice!")
 
-
-# ==========================================
-# 3. FROM Search&Claim_item.py
-# ==========================================
 def search_and_claim_module():
     items_list = [
         {
@@ -335,14 +323,6 @@ def report_found_item():
     print("Category:", category)
     print("Location:", location)
 
-    #Does descriptions matches any lost item
-    #Continue...
-    #(code here)
-
-
-# ==========================================
-# 5. FROM lost_item_reporting.py
-# ==========================================
 def report_lost_item():
     print("\n--- Report Lost Item ---")
 
@@ -363,14 +343,7 @@ def report_lost_item():
     print("Location:", location)
     print("Description:", description)
 
-    #Search in the data base
-    #Print wheather present or not and then continue...
-    # (code here)
 
-
-# ==========================================
-# MAIN PROJECT MENU
-# ==========================================
 while True:
     print("\n===================================")
     print("   CAMPUS LOST & FOUND PROJECT")
