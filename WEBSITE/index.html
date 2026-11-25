@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Lost &amp; Found — Visual Directory &amp; Recovery</title>
+  
+  <!-- Google Fonts matching the photo design -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Immediate Theme Check to Prevent FOUC -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('campus_theme');
+      if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark-mode');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <!-- Top Outer Canvas Frame -->
+  <div class="outer-canvas">
+    <div class="page-container">
+
+      <!-- ==========================================
+           HEADER / NAVIGATION
+           ========================================== -->
+      <header class="site-header">
+        <div class="header-left">
+          <a href="#hero" class="brand-logo" aria-label="Campus Lost and Found">
+            <span class="logo-glyph" aria-hidden="true">
+              <span class="glyph-circle"></span>
+              <span class="glyph-crescent-left"></span>
+              <span class="glyph-crescent-right"></span>
+            </span>
+            <span class="brand-name">reclaim</span>
+          </a>
+        </div>
+
+        <nav class="main-nav" aria-label="Main Navigation">
+          <a href="#hero" class="nav-link active">Home</a>
+          <a href="#search-claim-section" class="nav-link">Search &amp; Claim</a>
+          <a href="#report-section" class="nav-link">Report Item</a>
+          <a href="#records-section" class="nav-link">All Records</a>
+          <a href="#users-section" class="nav-link">User Management</a>
+        </nav>
+
+        <div class="header-right">
+          <!-- Theme Toggle Button (Light/Dark - Black/Purple/Magenta) -->
+          <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" title="Switch Theme (Dark / Light)" aria-label="Toggle dark mode">
+            <svg class="theme-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+            <svg class="theme-icon sun-icon" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <span class="theme-btn-text" id="theme-btn-text">Dark Mode</span>
+          </button>
+
+          <div class="header-pill" id="user-pill-btn" onclick="openUserModal()" title="View or Switch User">
+            <span class="pill-dot">+</span>
+            <span class="pill-text" id="nav-user-label">Central Desk, 23 Nov 26</span>
+            <div class="pill-avatar" id="nav-avatar">
+              <span id="nav-avatar-initials">PD</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ==========================================
+           HERO SECTION (Matching Photo Composition)
+           ========================================== -->
+      <section class="hero-section" id="hero">
+        <!-- Left Column: Bold Typography & Stats -->
+        <div class="hero-left">
+          <!-- Campus Verification Micro-Badge (fills top negative space) -->
+          <div class="hero-eyebrow-badge">
+            <span class="eyebrow-dot"></span>
+            <span>CAMPUS SECURITY DIRECTORY • LIVE RECOVERY HUB</span>
+          </div>
+
+          <h1 class="hero-title">
+            lost &amp;<br>
+            found
+          </h1>
+
+          <p class="hero-description">
+            Welcome to a central lost &amp; found network that unites our campus.
+            Discover reported belongings, track recoveries in real-time,
+            and claim what is rightfully yours.
+          </p>
+
+          <!-- Quick Category Filters (Replaces yt/ig/fb/x, fills negative space) -->
+          <div class="hero-category-capsules">
+            <button class="filter-pill active" onclick="quickFilter('All')">
+              <span>●</span> All Belongings
+            </button>
+            <button class="filter-pill" onclick="quickFilter('Lost')">
+              <span>⚠️</span> Lost Items
+            </button>
+            <button class="filter-pill" onclick="quickFilter('Found')">
+              <span>✓</span> Found Items
+            </button>
+            <button class="filter-pill" onclick="quickFilter('Claimed')">
+              <span>🤝</span> Claimed
+            </button>
+          </div>
+
+          <!-- Category Quick-Jump Chips (Rich visual filler) -->
+          <div class="hero-quick-chips">
+            <span class="quick-chip-label">Quick Search:</span>
+            <span class="quick-chip" onclick="quickCategoryJump('Bottle')">☕ Bottles</span>
+            <span class="quick-chip" onclick="quickCategoryJump('Accessories')">🔑 Keys &amp; Wallets</span>
+            <span class="quick-chip" onclick="quickCategoryJump('Study')">📚 Study Kits</span>
+            <span class="quick-chip" onclick="quickCategoryJump('Tech')">📱 Tech &amp; Chargers</span>
+            <span class="quick-chip" onclick="quickCategoryJump('Bags')">🎒 Backpacks</span>
+          </div>
+
+          <!-- Bold Numeric Stats (Realtime Claimed + Physical Location) -->
+          <div class="hero-stats-row">
+            <!-- Stat 1: Real-time Number of Items Claimed All-Time -->
+            <div class="stat-card claimed-stat-card">
+              <div class="stat-badge-sub">ALL-TIME RECOVERY</div>
+              <div class="stat-number" id="realtime-claimed-stat">0</div>
+              <div class="stat-label">
+                Items claimed &amp; reunited with owners across all campus centers
+              </div>
+            </div>
+
+            <!-- Stat 2: Physical Campus Lost & Found Location -->
+            <div class="stat-card location-stat-card">
+              <div class="stat-badge-sub location-badge">
+                <span class="live-dot-mini"></span> PHYSICAL DESK
+              </div>
+              <div class="location-main-title">
+                Infront of 3x3 Basketball Court
+              </div>
+              <div class="stat-label location-desc">
+                Under C3 Hostel • Open Daily 8:00 AM – 8:00 PM for physical verification &amp; claim handover
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Saffron Yellow / Purple & Magenta Rounded Card -->
+        <div class="hero-right">
+          <div class="yellow-card">
+            <!-- Delicate Signature Script Overlay -->
+            <div class="signature-overlay" aria-hidden="true">
+              Campus Security
+            </div>
+
+            <!-- Visual Showcase Graphic (No hitbox obstruction) -->
+            <div class="showcase-content">
+              <div class="security-card-graphic" aria-hidden="true">
+                <div class="security-shield-ring">
+                  <svg viewBox="0 0 24 24" width="52" height="52" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <path d="M9 12l2 2 4-4"></path>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Interactive Floating Camera Button (Opens Photo Picker / Modal) -->
+              <button 
+                type="button" 
+                class="floating-badge-camera interactive-camera-btn" 
+                id="hero-camera-btn" 
+                onclick="triggerHeroCameraUpload()" 
+                title="Click to Add Photo of Found / Lost Item"
+                aria-label="Add photograph of item"
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                  <path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+                </svg>
+                <span class="camera-tooltip-label">+ Add Photo</span>
+              </button>
+
+              <!-- Hidden input for direct camera/gallery trigger -->
+              <input 
+                type="file" 
+                id="hero-camera-file-input" 
+                accept="image/*" 
+                style="display: none;" 
+                onchange="handleHeroPhotoSelected(event)"
+              >
+
+              <div class="floating-badge-avatar" title="Officer Ramesh / Central Desk">
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'><circle cx='20' cy='20' r='20' fill='%23f4efe6'/><circle cx='20' cy='15' r='7' fill='%23111'/><path d='M10 32 C10 24 30 24 30 32' fill='%23111'/></svg>" alt="Campus Guard" />
+              </div>
+
+              <!-- Black Circular Arrow Button ↗ (Action trigger) -->
+              <a href="#search-claim-section" class="floating-badge-arrow" title="Jump to Search & Claim" aria-label="Search and Claim belongings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </a>
+            </div>
+
+            <!-- Mini Live Status Box inside yellow card -->
+            <div class="yellow-card-footer">
+              <div class="live-pill">
+                <span class="live-blink"></span>
+                <span>DESK ACTIVE</span>
+              </div>
+              <div class="yellow-card-meta">
+                <strong id="unclaimed-count">3 items</strong> awaiting claim today
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           MODULE 3: SEARCH & CLAIM ITEMS MODULE
+           ========================================== -->
+      <section class="content-section" id="search-claim-section">
+        <div class="section-header">
+          <div class="section-tag">Module 01</div>
+          <h2 class="section-title">Search &amp; Claim Module</h2>
+          <p class="section-subtitle">
+            Find items reported lost or found across campus, view details, and instantly file an authenticated ownership claim.
+          </p>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="search-panel">
+          <div class="search-input-wrapper">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input 
+              type="text" 
+              id="search-input" 
+              placeholder="Search by item name, keyword, category, or location (e.g. 'bottle', 'library', 'wallet')..." 
+              oninput="handleSearch()"
+            >
+            <button class="clear-search-btn" id="clear-search" onclick="clearSearch()" style="display:none;">&times;</button>
+          </div>
+
+          <div class="search-controls-row">
+            <div class="category-chips" id="category-chips">
+              <button class="chip active" onclick="filterByCategory('all')">All Categories</button>
+              <button class="chip" onclick="filterByCategory('Bottle')">Bottle</button>
+              <button class="chip" onclick="filterByCategory('Accessories')">Accessories</button>
+              <button class="chip" onclick="filterByCategory('Study')">Study</button>
+              <button class="chip" onclick="filterByCategory('Tech')">Tech</button>
+              <button class="chip" onclick="filterByCategory('Bags')">Bags</button>
+            </div>
+
+            <div class="status-toggle-group">
+              <button class="status-tab active" onclick="filterByStatus('all')">All Status</button>
+              <button class="status-tab" onclick="filterByStatus('Found')">Found</button>
+              <button class="status-tab" onclick="filterByStatus('Lost')">Lost</button>
+              <button class="status-tab" onclick="filterByStatus('Claimed')">Claimed</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item Cards Grid -->
+        <div class="items-grid" id="items-grid">
+          <!-- Dynamically populated by app.js -->
+        </div>
+
+        <!-- Empty Results State -->
+        <div class="empty-state-box" id="empty-state" style="display: none;">
+          <div class="empty-icon">🔍</div>
+          <h3>No matching items found</h3>
+          <p>Try searching for a different keyword or report this item below.</p>
+          <a href="#report-section" class="btn-primary">Report an Item Now</a>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           MODULE 2, 4, 5: REPORT LOST OR FOUND ITEM
+           ========================================== -->
+      <section class="content-section" id="report-section">
+        <div class="section-header">
+          <div class="section-tag">Module 02</div>
+          <h2 class="section-title">Report an Item</h2>
+          <p class="section-subtitle">
+            Whether you lost a personal belonging or discovered an item on campus, log it here to facilitate immediate recovery.
+          </p>
+        </div>
+
+        <div class="report-box">
+          <!-- Tab Switcher: Report Lost vs Report Found -->
+          <div class="report-tabs">
+            <button class="report-tab active" id="tab-report-lost" onclick="switchReportTab('Lost')">
+              <span class="tab-indicator">●</span> Report Lost Item
+            </button>
+            <button class="report-tab" id="tab-report-found" onclick="switchReportTab('Found')">
+              <span class="tab-indicator">●</span> Report Found Item
+            </button>
+          </div>
+
+          <!-- Matching Suggestion Alert -->
+          <div class="match-alert-box" id="match-alert-box" style="display: none;">
+            <div class="match-alert-header">
+              <span class="match-badge">Potential Match Found!</span>
+              <button class="close-match-btn" onclick="dismissMatchAlert()">&times;</button>
+            </div>
+            <div id="match-alert-content"></div>
+          </div>
+
+          <!-- The Active Form -->
+          <form id="item-report-form" onsubmit="handleItemReport(event)">
+            <input type="hidden" id="report-status" value="Lost">
+            <!-- Hidden field for attached photo Base64 data -->
+            <input type="hidden" id="form-photo-data" value="">
+
+            <div class="form-grid">
+              <!-- Item Name -->
+              <div class="form-group col-span-2">
+                <label for="form-item-name">Item Name *</label>
+                <input 
+                  type="text" 
+                  id="form-item-name" 
+                  placeholder="e.g. Blue Hydroflask Water Bottle, HP Laptop Charger" 
+                  required 
+                  oninput="checkMatchSuggestions()"
+                >
+              </div>
+
+              <!-- Category -->
+              <div class="form-group">
+                <label for="form-category">Category *</label>
+                <select id="form-category" required onchange="checkMatchSuggestions()">
+                  <option value="">Select Category...</option>
+                  <option value="Bottle">Bottle</option>
+                  <option value="Accessories">Accessories</option>
+                  <option value="Study">Study Material / Books</option>
+                  <option value="Tech">Tech / Electronics</option>
+                  <option value="Bags">Bags / Backpacks</option>
+                  <option value="ID Cards">ID Cards &amp; Keys</option>
+                  <option value="Clothing">Clothing</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <!-- Location -->
+              <div class="form-group">
+                <label for="form-location">Campus Location *</label>
+                <input 
+                  type="text" 
+                  id="form-location" 
+                  placeholder="e.g. Infront of 3x3 Basketball Court, C3 Hostel, Central Library" 
+                  required
+                >
+              </div>
+
+              <!-- Description -->
+              <div class="form-group col-span-2">
+                <label for="form-description">Description &amp; Identifying Details *</label>
+                <textarea 
+                  id="form-description" 
+                  rows="3" 
+                  placeholder="Detail stickers, scratches, colors, contents, brand, or unique identifying markings..." 
+                  required
+                ></textarea>
+              </div>
+
+              <!-- Photo Upload Box (Requested Camera/Photo capability) -->
+              <div class="form-group col-span-2">
+                <label>Item Photograph (Recommended for Verification)</label>
+                <div class="photo-dropzone" id="report-photo-dropzone" onclick="document.getElementById('report-photo-file').click()">
+                  <input 
+                    type="file" 
+                    id="report-photo-file" 
+                    accept="image/*" 
+                    style="display:none;" 
+                    onchange="handleFormPhotoUpload(event)"
+                  >
+                  <div id="dropzone-empty" class="dropzone-inner">
+                    <svg class="dropzone-icon" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                      <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                    <div class="dropzone-prompt">
+                      <strong>Click to upload photograph</strong> or drag &amp; drop here
+                    </div>
+                    <span class="dropzone-hint">Supports JPG, PNG, WEBP — camera capture supported</span>
+                  </div>
+
+                  <div id="dropzone-preview-wrap" class="dropzone-preview-wrap" style="display:none;">
+                    <img id="report-photo-preview" src="" alt="Item Preview" class="photo-thumbnail">
+                    <div class="preview-actions">
+                      <span class="photo-attached-tag">✓ Photo Attached</span>
+                      <button type="button" class="btn-remove-photo" onclick="event.stopPropagation(); removeReportPhoto()">Remove</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Date -->
+              <div class="form-group">
+                <label for="form-date">Date *</label>
+                <input type="date" id="form-date" required>
+              </div>
+
+              <!-- Contact Person Name -->
+              <div class="form-group">
+                <label for="form-person">Your Full Name *</label>
+                <input 
+                  type="text" 
+                  id="form-person" 
+                  placeholder="e.g. Pranav Deshwal" 
+                  required
+                >
+              </div>
+
+              <!-- Contact / Phone / Email -->
+              <div class="form-group">
+                <label for="form-contact">Contact Number / Desk *</label>
+                <input 
+                  type="text" 
+                  id="form-contact" 
+                  placeholder="e.g. +91 9876543210 or Security Desk C11" 
+                  required
+                >
+              </div>
+
+              <!-- Student / Employee ID (Optional for claim reference) -->
+              <div class="form-group">
+                <label for="form-id-num">Student / Staff ID Number</label>
+                <input 
+                  type="text" 
+                  id="form-id-num" 
+                  placeholder="e.g. S26CSEU1917"
+                >
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="reset" class="btn-secondary" onclick="resetReportForm()">Clear Form</button>
+              <button type="submit" class="btn-primary" id="report-submit-btn">
+                <span>Submit Lost Report</span>
+                <span class="btn-arrow">↗</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           MODULE 2: CAMPUS MANAGEMENT RECORDS (TABLE)
+           ========================================== -->
+      <section class="content-section" id="records-section">
+        <div class="section-header">
+          <div class="section-tag">Module 03</div>
+          <h2 class="section-title">All Campus Records</h2>
+          <p class="section-subtitle">
+            Directly mirroring the Python in-memory records database with live status tracking, photos, and CSV download.
+          </p>
+        </div>
+
+        <div class="table-container-card">
+          <div class="table-toolbar">
+            <div class="table-filter-input">
+              <input 
+                type="text" 
+                id="table-search-input" 
+                placeholder="Filter table rows..." 
+                oninput="handleTableSearch()"
+              >
+            </div>
+            <div class="table-actions">
+              <button class="btn-outline" onclick="exportRecordsToCSV()">Export CSV</button>
+              <button class="btn-outline" onclick="resetDemoData()">Reset Demo Records</button>
+            </div>
+          </div>
+
+          <div class="table-scroll-wrapper">
+            <table class="records-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Photo</th>
+                  <th>Item Name</th>
+                  <th>Category</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Location</th>
+                  <th>Date</th>
+                  <th>Reported By</th>
+                  <th>Contact</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="records-table-body">
+                <!-- Dynamically populated by app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           MODULE 1: USER MANAGEMENT (PROTECTED ADMIN)
+           ========================================== -->
+      <section class="content-section" id="users-section">
+        <div class="section-header">
+          <div class="section-header-top">
+            <div class="section-tag">Module 04</div>
+            <span class="admin-status-pill" id="admin-status-indicator">🔒 Locked • Admin Auth Required</span>
+          </div>
+          <h2 class="section-title">User Management</h2>
+          <p class="section-subtitle">
+            Manage authenticated campus accounts, role permissions, and system profiles. Restricted to authorized administrators.
+          </p>
+        </div>
+
+        <!-- Locked Admin Security Gateway (Visible by default) -->
+        <div class="admin-lock-card" id="admin-lock-card">
+          <div class="lock-shield-badge">🔒</div>
+          <h3 class="admin-lock-title">Restricted Administrator Gateway</h3>
+          <p class="admin-lock-subtitle">
+            The user database and campus credentials are encrypted. Enter authorized administrator credentials to unlock the user directory.
+          </p>
+
+          <form id="admin-unlock-form" onsubmit="handleAdminUnlock(event)" class="admin-unlock-box">
+            <div class="form-grid">
+              <div class="form-group">
+                <div class="field-label-row">
+                  <label for="admin-auth-username">Administrator Username *</label>
+                  <span class="char-limit-badge">Max 20 chars</span>
+                </div>
+                <input type="text" id="admin-auth-username" value="pranav" maxlength="20" placeholder="e.g. pranav" required autocomplete="username">
+              </div>
+
+              <div class="form-group">
+                <label for="admin-auth-password">Security Password *</label>
+                <div class="password-input-wrapper">
+                  <input type="password" id="admin-auth-password" placeholder="Enter admin security password" required autocomplete="current-password">
+                  <button 
+                    type="button" 
+                    class="eye-toggle-btn" 
+                    onclick="togglePasswordVisibility('admin-auth-password', this)" 
+                    title="Show / Hide password" 
+                    aria-label="Toggle password visibility"
+                  >
+                    <svg class="eye-icon eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <svg class="eye-icon eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                      <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-unlock-actions">
+              <button type="submit" class="btn-primary">
+                <span>Unlock User Directory</span>
+                <span class="btn-arrow">🔓</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Unlocked Content (Revealed after entering pranav@230107) -->
+        <div id="admin-unlocked-content" style="display: none;">
+          <div class="admin-bar-header">
+            <span class="admin-badge-granted">✓ Access Granted • <span id="admin-user-count">3 Accounts Active</span></span>
+            <button type="button" class="btn-outline btn-sm" onclick="handleAdminLock()">🔒 Lock Panel</button>
+          </div>
+
+          <div class="user-management-grid">
+            <!-- Active User Profile Card -->
+            <div class="profile-card">
+              <div class="profile-header">
+                <div class="profile-avatar-large" id="profile-avatar-large">PD</div>
+                <div>
+                  <h3 class="profile-name" id="profile-display-name">Pranav Deshwal</h3>
+                  <span class="profile-role-badge" id="profile-display-role">Student</span>
+                </div>
+              </div>
+
+              <div class="profile-details-list">
+                <div class="profile-detail-item">
+                  <span class="detail-label">Username:</span>
+                  <span class="detail-value" id="profile-display-username">pranav</span>
+                </div>
+                <div class="profile-detail-item">
+                  <span class="detail-label">Student ID:</span>
+                  <span class="detail-value" id="profile-display-id">S26CSEU1917</span>
+                </div>
+                <div class="profile-detail-item">
+                  <span class="detail-label">Status:</span>
+                  <span class="detail-value text-success">Logged In &amp; Active</span>
+                </div>
+              </div>
+
+              <div class="profile-edit-box">
+                <label for="profile-new-name">Change Full Name (Manage Profile):</label>
+                <div class="input-with-button">
+                  <input type="text" id="profile-new-name" placeholder="Enter new name...">
+                  <button class="btn-primary" onclick="handleUpdateProfile()">Update</button>
+                </div>
+              </div>
+
+              <div class="profile-actions">
+                <button class="btn-secondary" onclick="openLoginTab()">Switch Account</button>
+                <button class="btn-outline" onclick="handleLogout()">Log Out</button>
+              </div>
+            </div>
+
+            <!-- Fast Role Switcher / Demo Users -->
+            <div class="user-accounts-card">
+              <h3 class="card-inner-title">Registered Campus Accounts (users_db)</h3>
+              <p class="card-inner-desc">Click any account below to instantly switch roles or test permissions:</p>
+
+              <div class="accounts-list" id="accounts-list">
+                <!-- Dynamically populated -->
+              </div>
+
+              <button class="btn-outline full-width mt-12" onclick="openRegisterTab()">+ Register New Campus User</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           FOOTER
+           ========================================== -->
+      <footer class="site-footer">
+        <div class="footer-left">
+          <div class="brand-logo footer-logo">
+            <span class="logo-glyph" aria-hidden="true">
+              <span class="glyph-circle"></span>
+              <span class="glyph-crescent-left"></span>
+              <span class="glyph-crescent-right"></span>
+            </span>
+            <span class="brand-name">reclaim</span>
+          </div>
+          <p class="footer-tagline">Campus Lost &amp; Found Directory. Infront of 3x3 Basketball Court, under C3 Hostel.</p>
+        </div>
+
+        <div class="footer-center">
+          <div class="footer-links">
+            <a href="#hero">Back to Top</a>
+            <a href="#search-claim-section">Search Database</a>
+            <a href="#report-section">Report Form</a>
+            <a href="#records-section">Management Table</a>
+          </div>
+          <div class="footer-contact-row">
+            <span class="contact-label">Contact:</span>
+            <a href="mailto:pranavdeshwal23jan@gmail.com" class="footer-email-link">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              pranavdeshwal23jan@gmail.com
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-right">
+          <div class="footer-signature">Designed with editorial precision</div>
+          <div class="footer-copyright">&copy; 2026 Pranav Deshwal. All rights reserved.</div>
+        </div>
+      </footer>
+
+    </div><!-- /.page-container -->
+  </div><!-- /.outer-canvas -->
+
+  <!-- ==========================================
+       MODAL 1: CLAIM ITEM MODAL (Search & Claim)
+       ========================================== -->
+  <div class="modal-backdrop" id="claim-modal" style="display:none;" onclick="handleModalBackdropClick(event, 'claim-modal')">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-tag">Verification Required</div>
+        <button class="modal-close-btn" onclick="closeClaimModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <h3 class="modal-title">Claim Belonging</h3>
+        <p class="modal-subtitle">Verify your ownership details to submit this official campus claim.</p>
+
+        <!-- Selected Item Summary Card -->
+        <div class="modal-item-preview" id="modal-item-preview">
+          <!-- Filled by JS -->
+        </div>
+
+        <form id="claim-form" onsubmit="handleClaimSubmit(event)">
+          <input type="hidden" id="claim-item-id">
+
+          <div class="form-group">
+            <label for="claim-name">Your Full Name *</label>
+            <input 
+              type="text" 
+              id="claim-name" 
+              value="Pranav Deshwal" 
+              placeholder="e.g. Pranav Deshwal" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="claim-student-id">Student / Enrollment ID *</label>
+            <input 
+              type="text" 
+              id="claim-student-id" 
+              value="S26CSEU1917" 
+              placeholder="e.g. S26CSEU1917" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="claim-proof">Identifying Details / Proof of Ownership *</label>
+            <textarea 
+              id="claim-proof" 
+              rows="3" 
+              placeholder="e.g. Student ID card verification, screen passcode, specific brand sticker on back, color of strap..." 
+              required
+            >Student ID card verification</textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" onclick="closeClaimModal()">Cancel</button>
+            <button type="submit" class="btn-primary">
+              <span>Confirm &amp; Claim Item</span>
+              <span class="btn-arrow">↗</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL 2: USER AUTH (LOGIN / REGISTER WITH EYE BUTTON)
+       ========================================== -->
+  <div class="modal-backdrop" id="user-modal" style="display:none;" onclick="handleModalBackdropClick(event, 'user-modal')">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-tag">Campus Identity</div>
+        <button class="modal-close-btn" onclick="closeUserModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Auth Tabs: Login vs Register -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="auth-tab-login" onclick="switchAuthTab('login')">Log In</button>
+          <button class="auth-tab" id="auth-tab-register" onclick="switchAuthTab('register')">Register New User</button>
+        </div>
+
+        <!-- Login Form with Password Eye Toggle -->
+        <form id="login-form" onsubmit="handleLoginSubmit(event)">
+          <div class="form-group">
+            <div class="field-label-row">
+              <label for="login-username">Username *</label>
+              <span class="char-limit-badge" id="login-user-badge">Max 20 chars</span>
+            </div>
+            <input 
+              type="text" 
+              id="login-username" 
+              placeholder="Enter username (e.g. 'pranav')" 
+              maxlength="20"
+              required
+              autocomplete="username"
+              oninput="handleUsernameInput(this, 'login-user-badge')"
+            >
+          </div>
+
+          <div class="form-group">
+            <div class="field-label-row">
+              <label for="login-password">Password *</label>
+              <span class="char-limit-badge" id="login-pw-badge">Policy: 8+ chars</span>
+            </div>
+            <div class="password-input-wrapper">
+              <input 
+                type="password" 
+                id="login-password" 
+                placeholder="Enter password (e.g. 'Pranav@230107')" 
+                minlength="8" 
+                required 
+                autocomplete="current-password"
+                oninput="handlePasswordInput(this, 'login-req', 'login-pw-badge')"
+              >
+              <button 
+                type="button" 
+                class="eye-toggle-btn" 
+                onclick="togglePasswordVisibility('login-password', this)" 
+                title="Show / Hide password" 
+                aria-label="Toggle password visibility"
+              >
+                <!-- Open Eye Icon -->
+                <svg class="eye-icon eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <!-- Closed Eye Icon (Hidden by default) -->
+                <svg class="eye-icon eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Interactive Password Requirements Checklist for Login -->
+            <div class="password-requirements-box" id="login-password-requirements">
+              <div class="req-title">Password Requirements:</div>
+              <div class="req-items-grid">
+                <span class="req-pill req-unmet" id="login-req-len"><span class="req-icon">✕</span> 8+ Characters</span>
+                <span class="req-pill req-unmet" id="login-req-upper"><span class="req-icon">✕</span> 1 Capital (A-Z)</span>
+                <span class="req-pill req-unmet" id="login-req-lower"><span class="req-icon">✕</span> 1 Small (a-z)</span>
+                <span class="req-pill req-unmet" id="login-req-num"><span class="req-icon">✕</span> 1 Number (0-9)</span>
+                <span class="req-pill req-unmet" id="login-req-special"><span class="req-icon">✕</span> 1 Special symbol</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" onclick="closeUserModal()">Cancel</button>
+            <button type="submit" class="btn-primary">
+              <span>Log In</span>
+              <span class="btn-arrow">↗</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Register Form with Password Eye Toggle -->
+        <form id="register-form" onsubmit="handleRegisterSubmit(event)" style="display:none;">
+          <div class="form-group">
+            <div class="field-label-row">
+              <label for="reg-username">Choose Username *</label>
+              <span class="char-limit-badge" id="reg-user-badge">0 / 20 chars</span>
+            </div>
+            <input 
+              type="text" 
+              id="reg-username" 
+              placeholder="e.g. rohan_m (max 20 chars)" 
+              maxlength="20"
+              required
+              autocomplete="username"
+              oninput="handleUsernameInput(this, 'reg-user-badge')"
+            >
+          </div>
+
+          <div class="form-group">
+            <div class="field-label-row">
+              <label for="reg-password">Password *</label>
+              <span class="char-limit-badge" id="reg-pw-badge">Min 8 chars with policy</span>
+            </div>
+            <div class="password-input-wrapper">
+              <input 
+                type="password" 
+                id="reg-password" 
+                placeholder="Create secure password" 
+                minlength="8" 
+                required 
+                autocomplete="new-password"
+                oninput="handlePasswordInput(this, 'reg-req', 'reg-pw-badge')"
+              >
+              <button 
+                type="button" 
+                class="eye-toggle-btn" 
+                onclick="togglePasswordVisibility('reg-password', this)" 
+                title="Show / Hide password" 
+                aria-label="Toggle password visibility"
+              >
+                <svg class="eye-icon eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <svg class="eye-icon eye-closed" style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Interactive Password Requirements Checklist for Register -->
+            <div class="password-requirements-box" id="reg-password-requirements">
+              <div class="req-title">Password Security Policy:</div>
+              <div class="req-items-grid">
+                <span class="req-pill req-unmet" id="reg-req-len"><span class="req-icon">✕</span> 8+ Characters</span>
+                <span class="req-pill req-unmet" id="reg-req-upper"><span class="req-icon">✕</span> 1 Capital (A-Z)</span>
+                <span class="req-pill req-unmet" id="reg-req-lower"><span class="req-icon">✕</span> 1 Small (a-z)</span>
+                <span class="req-pill req-unmet" id="reg-req-num"><span class="req-icon">✕</span> 1 Number (0-9)</span>
+                <span class="req-pill req-unmet" id="reg-req-special"><span class="req-icon">✕</span> 1 Special symbol</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-fullname">Your Full Name *</label>
+            <input type="text" id="reg-fullname" placeholder="e.g. Rohan Mehta" required>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-role">Campus Role *</label>
+            <select id="reg-role" required>
+              <option value="student">1. Student</option>
+              <option value="staff">2. Staff</option>
+              <option value="administrator">3. Administrator</option>
+            </select>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" onclick="closeUserModal()">Cancel</button>
+            <button type="submit" class="btn-primary">
+              <span>Register Account</span>
+              <span class="btn-arrow">↗</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <!-- Script Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
